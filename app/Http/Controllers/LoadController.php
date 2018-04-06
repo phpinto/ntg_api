@@ -32,6 +32,7 @@ class LoadController extends Controller
         $shipZip = Helpers::zipSwitcher($shipZip);
         $equipment = $load->Equipment;
         $equipment = strtoupper($equipment);
+        $loadDateArray = retrieveDates($load->TrailerNumber,$load->TruckNumber);
         $i = 0;
         
         $matchingLoads = Load::where([
@@ -50,12 +51,10 @@ class LoadController extends Controller
             $e40 = ['40FT CONTAINER', '40 STD', '40 HC'];
 
             if ($matchZip == $shipZip) {
-                if ($equipment == $matchEquipment) {
-                    $matches[$i] = $match;
-                    $i++;
-                }
-                else if ( (in_array($equipment, $e20) && in_array($matchEquipment, $e20)) 
-                        || (in_array($equipment, $e40) && in_array($matchEquipment, $e40))) {
+               if ( $equipment == $matchEquipment
+                    || (in_array($equipment, $e20) && in_array($matchEquipment, $e20)) 
+                    || (in_array($equipment, $e40) && in_array($matchEquipment, $e40))) {
+                        $matchDateArray = retrieveDates($match->TrailerNumber,$match->TruckNumber);
                         $matches[$i] = $match;
                         $i++; 
                 }
